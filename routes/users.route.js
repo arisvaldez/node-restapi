@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { isValidRole } = require('../middlewares/db-validators');
+const { isValidRole, isUniqueEmail } = require('../middlewares/db-validators');
 const { fieldValidator } = require('../middlewares/fields-validator');
 
 const {
@@ -20,12 +20,12 @@ router.post(
   '/',
   [
     check('email', 'this email is invalid').isEmail(),
+    check('email').custom(isUniqueEmail),
     check(
       'password',
       'the password is required, and the minimun lenght is 6'
     ).isLength({ min: 6 }),
     check('name', 'the name is required').not().isEmpty(),
-    //check('role', 'the is a invalid role').isIn(['ADMIN', 'USER']),
     check('role', 'the is a invalid role').custom(isValidRole),
     fieldValidator,
   ],
