@@ -2,9 +2,26 @@ const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
 const User = require('../models/user');
 
-const user_get = (req, res = response) => {
-  const params = req.query;
-  res.json({ ok: true, msg: 'Controller get', params });
+const user_get = async (req = request, res = response) => {
+  const { limit, from } = req.query;
+
+  const _limit = !isNaN(limit) ? Number(limit) : 5;
+  const _from = !isNaN(from) ? Number(from) : 0;
+
+  const query = { status: true };
+
+/*   const users = await User.find({ status: true })
+    .skip(Number(_from))
+    .limit(Number(_limit));
+
+  const total = await User.countDocuments({ status: true }); */
+
+  const [total, users] = await Promise.all([
+    User.countDocuments({ status: true }),
+    User.find({ status: true }).skip(Number(_from)).limit(Number(_limit)),
+  ]);
+
+  res.json({ total, users });
 };
 
 const user_post = async (req = request, res = response) => {
@@ -16,7 +33,8 @@ const user_post = async (req = request, res = response) => {
     user.password = bcryptjs.hashSync(user.password, salt);
 
     await user.save();
-    res.json({ ok: true, msg: 'Controller post', user });
+
+    res.json(user);
   } catch (error) {
     console.error(error);
     res.status(400).json({ msg: 'Faltan Campos requeridos' });
@@ -28,7 +46,6 @@ const user_put = async (req = request, res = response) => {
 
   const { _id, password, google, email, ...otherData } = req.body;
 
-  //TODO database validation
   if (password) {
     const salt = bcryptjs.genSaltSync();
     otherData.password = bcryptjs.hashSync(password, salt);
@@ -36,7 +53,7 @@ const user_put = async (req = request, res = response) => {
 
   const user = await User.findByIdAndUpdate(id, otherData);
 
-  res.json({ ok: true, msg: 'Controller put', user, id });
+  res.json(user);
 };
 
 const user_delete = (req = request, res = response) => {
