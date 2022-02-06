@@ -23,9 +23,20 @@ const user_post = async (req = request, res = response) => {
   }
 };
 
-const user_put = (req = request, res = response) => {
+const user_put = async (req = request, res = response) => {
   const { id } = req.params;
-  res.json({ ok: true, msg: 'Controller put', id });
+
+  const { _id, password, google, email, ...otherData } = req.body;
+
+  //TODO database validation
+  if (password) {
+    const salt = bcryptjs.genSaltSync();
+    otherData.password = bcryptjs.hashSync(password, salt);
+  }
+
+  const user = await User.findByIdAndUpdate(id, otherData);
+
+  res.json({ ok: true, msg: 'Controller put', user, id });
 };
 
 const user_delete = (req = request, res = response) => {
