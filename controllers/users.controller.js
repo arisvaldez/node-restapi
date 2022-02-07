@@ -10,12 +10,6 @@ const user_get = async (req = request, res = response) => {
 
   const query = { status: true };
 
-/*   const users = await User.find({ status: true })
-    .skip(Number(_from))
-    .limit(Number(_limit));
-
-  const total = await User.countDocuments({ status: true }); */
-
   const [total, users] = await Promise.all([
     User.countDocuments({ status: true }),
     User.find({ status: true }).skip(Number(_from)).limit(Number(_limit)),
@@ -56,9 +50,10 @@ const user_put = async (req = request, res = response) => {
   res.json(user);
 };
 
-const user_delete = (req = request, res = response) => {
+const user_delete = async (req = request, res = response) => {
   const { id } = req.params;
-  res.json({ ok: true, msg: 'Controller del', id });
+  const user = await User.findByIdAndUpdate(id, { status: false });
+  res.json(user);
 };
 
 const user_patch = (req = request, res = response) => {
