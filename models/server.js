@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+
+const User = require('./user');
 const { dbConnection } = require('../database/config');
+const { seed } = require('../database/seed');
 
 class Server {
   constructor() {
@@ -10,8 +13,11 @@ class Server {
     this.usersEndpoint = '/api/users';
     this.authEndpoint = '/api/auth';
     this.connectToDb();
+
     this.middlewares();
     this.routes();
+
+    //this.seed();
   }
 
   middlewares() {
@@ -33,6 +39,12 @@ class Server {
     this.app.listen(this.port, () => {
       console.log(`Application running at ${this.port} port`);
     });
+  }
+
+  async seed() {
+    console.log('Starting User Seeded!');
+    await seed();
+    console.log('Finish User Seeded!');
   }
 }
 
