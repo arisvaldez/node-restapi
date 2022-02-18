@@ -18,7 +18,7 @@ const {
 } = require('../controllers/users.controller');
 
 const { fieldsValidator } = require('../middlewares/fields-validator');
-const { isAdminRole } = require('../middlewares/role-validator');
+const { isAdminRole, hasRole } = require('../middlewares/role-validator');
 
 const router = Router();
 
@@ -55,6 +55,7 @@ router.delete(
   [
     JWTValidator,
     isAdminRole,
+    hasRole('ADMIN', 'USER'),
     check('id', 'This is an invalid Id').isMongoId(),
     check('id').custom(isExistsUserById),
     fieldsValidator,
