@@ -25,6 +25,7 @@
       data-shape="rectangular"
       data-logo_alignment="left"
     ></div>
+    <button id="google_signout">Logout</button>
 
     <script>
       function handleCredentialResponse(response) {
@@ -40,9 +41,20 @@
           .then((resp) => resp.json())
           .then((resp) => {
             console.log(resp);
+            localStorage.setItem('email', resp.user.email);
           })
           .catch(console.warn);
       }
+
+      const logoutButton = document.getElementById('google_signout');
+      logoutButton.onclick = () => {
+        console.log(google.accounts.id);
+        google.accounts.id.disableAutoSelect();
+        google.accounts.id.revoke(localStorage.getItem('email'), (done) => {
+          localStorage.clear();
+          location.reload();
+        });
+      };
     </script>
   </body>
 </html>
