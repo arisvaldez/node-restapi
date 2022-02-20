@@ -17,7 +17,7 @@ class Server {
     this.middlewares();
     this.routes();
 
-    //this.seed();
+  //this.seed();
   }
 
   middlewares() {
