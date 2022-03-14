@@ -1,11 +1,11 @@
 const { request, response } = require('express');
+const { json } = require('express/lib/response');
 const bcryptjs = require('bcryptjs');
 
 const { generateJWT } = require('../JWT/generate-jwt');
 
 const User = require('../models/user');
-const { googleVerify } = require('../middlewares/google-verify');
-const { json } = require('express/lib/response');
+const { googleVerify } = require('../middlewares/');
 
 const login = async (req = request, res = response) => {
   const { email, password } = req.body;
@@ -51,7 +51,7 @@ const googleSignIn = async (req = request, res = response) => {
   try {
     const { name, img, email } = await googleVerify(id_token);
     let user = await User.findOne({ email });
-    
+
     if (!user) {
       const data = {
         name,

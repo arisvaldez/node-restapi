@@ -10,14 +10,19 @@ class Server {
     this.app = express();
     this.port = process.env.PORT;
 
-    this.usersEndpoint = '/api/users';
-    this.authEndpoint = '/api/auth';
+    this.endPoint = {
+      users: '/api/users',
+      auth: '/api/auth',
+      categories: '/api/categories',
+      products: 'api/products',
+    };
+
     this.connectToDb();
 
     this.middlewares();
     this.routes();
 
-  //this.seed();
+    //this.seed();
   }
 
   middlewares() {
@@ -31,8 +36,13 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.authEndpoint, require('../routes/auth.route'));
-    this.app.use(this.usersEndpoint, require('../routes/users.route'));
+    this.app.use(this.endPoint.auth, require('../routes/auth.route'));
+    this.app.use(
+      this.endPoint.categories,
+      require('../routes/categories.route')
+    );
+    this.app.use(this.endPoint.products, require('../routes/products.route'));
+    this.app.use(this.endPoint.users, require('../routes/users.route'));
   }
 
   listen() {

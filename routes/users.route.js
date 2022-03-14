@@ -1,28 +1,26 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { JWTValidator } = require('../middlewares/jwt-validator');
-
 const {
   isValidRole,
   isUniqueEmail,
   isExistsUserById,
-} = require('../middlewares/db-validators');
+  jwtValidator,
+  fieldsValidator,
+  isAdminRole,
+  hasRole,
+} = require('../middlewares/');
 
 const {
-  user_get,
-  user_post,
-  user_delete,
-  user_put,
-  user_patch,
+  create,
+  retrieve,
+  sofDelete,
+  update,
 } = require('../controllers/users.controller');
-
-const { fieldsValidator } = require('../middlewares/fields-validator');
-const { isAdminRole, hasRole } = require('../middlewares/role-validator');
 
 const router = Router();
 
-router.get('/', user_get);
+router.get('/', retrieve);
 
 router.post(
   '/',
@@ -37,7 +35,7 @@ router.post(
     check('role', 'the is a invalid role').custom(isValidRole),
     fieldsValidator,
   ],
-  user_post
+  create
 );
 
 router.put(
@@ -47,22 +45,21 @@ router.put(
     check('id').custom(isExistsUserById),
     fieldsValidator,
   ],
-  user_put
+  update
 );
 
 router.delete(
   '/:id',
   [
-    JWTValidator,
+    jwtValidator,
     isAdminRole,
     hasRole('ADMIN', 'USER'),
     check('id', 'This is an invalid Id').isMongoId(),
     check('id').custom(isExistsUserById),
     fieldsValidator,
   ],
-  user_delete
+  sofDelete
 );
 
-router.patch('/', user_patch);
 
 module.exports = router;

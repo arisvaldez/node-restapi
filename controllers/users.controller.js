@@ -2,7 +2,7 @@ const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
 const User = require('../models/user');
 
-const user_get = async (req = request, res = response) => {
+const retrieve = async (req = request, res = response) => {
   const { limit, from } = req.query;
 
   const _limit = !isNaN(limit) ? Number(limit) : 5;
@@ -11,14 +11,14 @@ const user_get = async (req = request, res = response) => {
   const query = { status: true };
 
   const [total, users] = await Promise.all([
-    User.countDocuments({ status: true }),
-    User.find({ status: true }).skip(Number(_from)).limit(Number(_limit)),
+    User.countDocuments(query),
+    User.find(query).skip(Number(_from)).limit(Number(_limit)),
   ]);
 
   res.json({ total, users });
 };
 
-const user_post = async (req = request, res = response) => {
+const create = async (req = request, res = response) => {
   try {
     const { name, email, password, role } = req.body;
     const user = User({ name, email, password, role });
@@ -35,7 +35,7 @@ const user_post = async (req = request, res = response) => {
   }
 };
 
-const user_put = async (req = request, res = response) => {
+const update = async (req = request, res = response) => {
   const { id } = req.params;
 
   const { _id, password, google, email, ...otherData } = req.body;
@@ -45,26 +45,25 @@ const user_put = async (req = request, res = response) => {
     otherData.password = bcryptjs.hashSync(password, salt);
   }
 
-  const user = await User.findByIdAndUpdate(id, otherData);
+  const user = await User.findByIdAndUpdate(id, otherData, { new: true });
 
   res.json(user);
 };
 
-const user_delete = async (req = request, res = response) => {
+const sofDelete = async (req = request, res = response) => {
   const { id } = req.params;
-  const  uid  = req.params;
-  const user = await User.findByIdAndUpdate(id, { status: false });
+  const uid = req.params;
+  const user = await User.findByIdAndUpdate(
+    id,
+    { status: false },
+    { new: true }
+  );
   res.json({ user, uid });
 };
 
-const user_patch = (req = request, res = response) => {
-  res.json({ ok: true, msg: 'Controller patch' });
-};
-
 module.exports = {
-  user_get,
-  user_delete,
-  user_post,
-  user_put,
-  user_patch,
+  retrieve,
+  sofDelete,
+  create,
+  update,
 };

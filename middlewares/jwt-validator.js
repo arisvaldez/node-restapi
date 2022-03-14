@@ -2,7 +2,7 @@ const { request, response } = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const JWTValidator = async (req = request, res = response, next) => {
+const jwtValidator = async (req = request, res = response, next) => {
   const token = req.header('token');
 
   if (!token) {
@@ -33,5 +33,5 @@ const invalidTokenMsg = async (res) =>
   });
 
 module.exports = {
-  JWTValidator,
+  jwtValidator,
 };
