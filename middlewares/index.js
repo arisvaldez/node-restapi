@@ -7,6 +7,7 @@ const {
   isUniqueEmail,
   isExistUserById,
   isExistCategoryById,
+  isExistProductById,
 } = require('./db-validators');
 
 module.exports = {
@@ -19,4 +20,5 @@ module.exports = {
   isUniqueEmail,
   isExistUserById,
   isExistCategoryById,
+  isExistProductById,
 };

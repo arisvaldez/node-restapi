@@ -4,6 +4,7 @@ const { check } = require('express-validator');
 const {
   jwtValidator,
   fieldsValidator,
+  isExistProductById,
   isExistCategoryById,
   isAdminRole,
 } = require('../middlewares');
@@ -24,7 +25,7 @@ router.get(
   '/:id',
   [
     check('id', 'This is a invalid ID').isMongoId(),
-    check('id').custom(isExistCategoryById),
+    check('id').custom(isExistProductById),
     fieldsValidator,
   ],
   retrieveById
@@ -35,6 +36,9 @@ router.post(
   [
     jwtValidator,
     check('name', 'the name is required').notEmpty(),
+    check('category', 'The category is required').notEmpty(),
+    check('category', 'This is a invalid ID').isMongoId(),
+    check('category').custom(isExistCategoryById),
     fieldsValidator,
   ],
   create
@@ -45,8 +49,11 @@ router.put(
   [
     jwtValidator,
     check('id', 'This is a invalid ID').isMongoId(),
-    check('id').custom(isExistCategoryById),
-    check('name', 'This name is required').notEmpty(),
+    check('id').custom(isExistProductById),
+    check('name', 'The name is required').notEmpty(),
+    check('category', 'The category is required').notEmpty(),
+    check('category', 'This is a invalid ID').isMongoId(),
+    check('category').custom(isExistCategoryById),
     fieldsValidator,
   ],
   update
@@ -58,7 +65,7 @@ router.delete(
     jwtValidator,
     isAdminRole,
     check('id', 'This is a invalid ID').isMongoId(),
-    check('id').custom(isExistCategoryById),
+    check('id').custom(isExistProductById),
     fieldsValidator,
   ],
   softDelete

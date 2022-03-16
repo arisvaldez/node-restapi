@@ -15,18 +15,18 @@ const create = async (req = request, res = response) => {
     user: _user_id,
   };
 
-  const validation = await _isExistProductByName(_name);
+  const productInDb = await _isExistProductByName(_name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = _user_id;
-      validation.category;
-      validation.description;
+  if (productInDb) {
+    if (!productInDb.status) {
+      productInDb.status = true;
+      productInDb.user = _user_id;
+      productInDb.category;
+      productInDb.description;
 
       const product = await Product.findByIdAndUpdate(
-        validation.id,
-        validation,
+        productInDb.id,
+        productInDb,
         {
           new: true,
         }
@@ -79,20 +79,20 @@ const update = async (req = request, res = response) => {
   const { status, user, ...data } = req.body;
   const { id } = req.params;
   const _user_id = req.authenticatedUser.__id;
-
+  
   data.name = data.name.toUpperCase();
   data.user = _user_id;
 
-  const validation = await _isExistProductByName(data.name);
+  const productInDb = await _isExistProductByName(data.name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = _user_id;
-      validation.category;
-      validation.description;
+  if (productInDb) {
+    if (!productInDb.status) {
+      productInDb.status = true;
+      productInDb.user = _user_id;
+      productInDb.category;
+      productInDb.description;
 
-      const product = await Product.findByIdAndUpdate(id, validation, {
+      const product = await Product.findByIdAndUpdate(id, productInDb, {
         new: true,
       });
 
@@ -100,12 +100,12 @@ const update = async (req = request, res = response) => {
     }
     return res
       .status(400)
-      .json({ msg: `This name is already in use, name:${_name}` });
+      .json({ msg: `This name is already in use, name:${data.name}` });
   }
 
-  const category = await Category.findByIdAndUpdate(id, data, { new: true });
+  const product = await Product.findByIdAndUpdate(id, data, { new: true });
 
-  res.json(category);
+  res.json(product);
 };
 
 const softDelete = async (req = request, res = response) => {

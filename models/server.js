@@ -11,10 +11,11 @@ class Server {
     this.port = process.env.PORT;
 
     this.endPoint = {
-      users: '/api/users',
       auth: '/api/auth',
       categories: '/api/categories',
-      products: 'api/products',
+      users: '/api/users',
+      search: '/api/searches',
+      products: '/api/products',
     };
 
     this.connectToDb();
@@ -42,6 +43,7 @@ class Server {
       require('../routes/categories.route')
     );
     this.app.use(this.endPoint.products, require('../routes/products.route'));
+    this.app.use(this.endPoint.search, require('../routes/searches.route'));
     this.app.use(this.endPoint.users, require('../routes/users.route'));
   }
 

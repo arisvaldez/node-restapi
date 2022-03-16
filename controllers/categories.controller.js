@@ -9,16 +9,16 @@ const create = async (req = request, res = response) => {
     user: req.authenticatedUser._id,
   };
 
-  const validation = await _isExistCategoryByName(name);
+  const categoryInDb = await _isExistCategoryByName(name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = req.authenticatedUser._id;
+  if (categoryInDb) {
+    if (!categoryInDb.status) {
+      categoryInDb.status = true;
+      categoryInDb.user = req.authenticatedUser._id;
 
       const category = await Category.findByIdAndUpdate(
-        validation.id,
-        validation,
+        categoryInDb.id,
+        categoryInDb,
         {
           new: true,
         }
@@ -71,14 +71,14 @@ const update = async (req = request, res = response) => {
   data.name = data.name.toUpperCase();
   data.user = req.authenticatedUser;
 
-  const validation = await _isExistCategoryByName(data.name);
+  const categoryInDb = await _isExistCategoryByName(data.name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = req.authenticatedUser._id;
+  if (categoryInDb) {
+    if (!categoryInDb.status) {
+      categoryInDb.status = true;
+      categoryInDb.user = req.authenticatedUser._id;
 
-      const category = await Category.findByIdAndUpdate(id, validation, {
+      const category = await Category.findByIdAndUpdate(id, categoryInDb, {
         new: true,
       });
 
