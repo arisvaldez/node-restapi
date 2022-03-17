@@ -1,17 +1,16 @@
 const { request, response } = require('express');
-const { User } = require('../models');
+const { User, Category, Product } = require('../models');
 const { ObjectId } = require('mongoose').Types;
 
 const allowedCollections = {
   users: 'users',
   categories: 'categories',
   products: 'products',
-  roles: 'roles',
 };
 
 const allowedCollectionsKeys = Object.keys(allowedCollections);
 
-const searchUser = async (term = '', res = response) => {
+const searchUsers = async (term = '', res = response) => {
   const isMongoId = ObjectId.isValid(term);
 
   if (isMongoId) {
@@ -34,31 +33,72 @@ const searchUser = async (term = '', res = response) => {
   });
 };
 
+const searchCategories = async (term = '', res = response) => {
+  const isMongoId = ObjectId.isValid(term);
+
+  if (isMongoId) {
+    const category = await Category.findById(term);
+    return res.json({
+      total: 1,
+      results: category ? [category] : [],
+    });
+  }
+
+  const regex = new RegExp(term, 'i');
+
+  const categories = await Category.find({
+    $or: [{ name: regex }],
+    $and: [{ status: true }],
+  });
+
+  return res.json({
+    total: categories.length,
+    results: categories,
+  });
+};
+
+const searchProducts = async (term = '', res = response) => {
+  const isMongoId = ObjectId.isValid(term);
+
+  if (isMongoId) {
+    const product = await Product.findById(term).populate('category', 'name');
+    return res.json({
+      total: 1,
+      results: product ? [product] : [],
+    });
+  }
+
+  const regex = new RegExp(term, 'i');
+
+  const products = await Product.find({
+    $or: [{ name: regex }],
+    $and: [{ status: true }],
+  }).populate('category', 'name');
+
+  return res.json({
+    total: products.length,
+    results: products,
+  });
+};
+
 const search = async (req = request, res = response) => {
   const { collection, term } = req.params;
 
   if (allowedCollectionsKeys.includes(collection)) {
     switch (collection) {
       case allowedCollections.users:
-        await searchUser(term, res);
-        break;
+        return await searchUsers(term, res);
       case allowedCollections.categories:
-        await searchUser(term, res);
-        break;
+        return await searchCategories(term, res);
       case allowedCollections.products:
-        await searchUser(term, res);
-        break;
-      case allowedCollections.roles:
-        await searchUser(term, res);
-        break;
-      default:
-        return res.status(400).json({
-          msg: `${collection} not found in allowed: ${allowedCollectionsKeys.join(
-            ', '
-          )}`,
-        });
+        return await searchProducts(term, res);
     }
   }
+  return res.status(400).json({
+    msg: `${collection} not found in allowed: ${allowedCollectionsKeys.join(
+      ', '
+    )}`,
+  });
 };
 
 module.exports = {
