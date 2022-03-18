@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 const User = require('./user');
 const { dbConnection } = require('../database/config');
@@ -13,9 +14,10 @@ class Server {
     this.endPoint = {
       auth: '/api/auth',
       categories: '/api/categories',
-      users: '/api/users',
       search: '/api/searches',
       products: '/api/products',
+      uploads: '/api/uploads',
+      users: '/api/users',
     };
 
     this.connectToDb();
@@ -30,6 +32,12 @@ class Server {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.static('public'));
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: '/tmp/',
+      })
+    );
   }
 
   async connectToDb() {
@@ -44,6 +52,7 @@ class Server {
     );
     this.app.use(this.endPoint.products, require('../routes/products.route'));
     this.app.use(this.endPoint.search, require('../routes/searches.route'));
+    this.app.use(this.endPoint.uploads, require('../routes/uploads.route'));
     this.app.use(this.endPoint.users, require('../routes/users.route'));
   }
 
