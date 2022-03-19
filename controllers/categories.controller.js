@@ -1,5 +1,5 @@
-const { response, request } = require('express');
-const { Category } = require('../models');
+import { response, request } from "express";
+import { Category } from "../models";
 
 const create = async (req = request, res = response) => {
   const name = req.body.name.toUpperCase();
@@ -49,7 +49,7 @@ const retrieve = async (req = request, res = response) => {
   const [total, categories] = await Promise.all([
     Category.countDocuments(query),
     Category.find(query)
-      .populate('user', 'name')
+      .populate("user", "name")
       .skip(Number(_from))
       .limit(Number(_limit)),
   ]);
@@ -59,7 +59,7 @@ const retrieve = async (req = request, res = response) => {
 
 const retrieveById = async (req = request, res = response) => {
   const { id } = req.params;
-  const category = await Category.findById(id).populate('user', 'name');
+  const category = await Category.findById(id).populate("user", "name");
 
   res.json(category);
 };
@@ -113,7 +113,7 @@ const _isExistCategoryByName = async (name) => {
   return isExist;
 };
 
-module.exports = {
+export default {
   create,
   retrieve,
   retrieveById,

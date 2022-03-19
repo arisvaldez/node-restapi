@@ -1,10 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const fileUpload = require('express-fileupload');
+import express from "express";
+import cors from "cors";
+import fileUpload from "express-fileupload";
 
-const User = require('./user');
-const { dbConnection } = require('../database/config');
-const { seed } = require('../database/seed');
+
+import User from "./user";
+import { dbConnection } from "../database/config";
+import { seed } from "../database/seed";
 
 class Server {
   constructor() {
@@ -45,10 +46,10 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.endPoint.auth, require('../routes/auth.route'));
+    this.app.use(this.endPoint.auth, require("../routes/auth.route").default);
     this.app.use(
       this.endPoint.categories,
-      require('../routes/categories.route')
+      require("../routes/categories.route").default
     );
     this.app.use(this.endPoint.products, require('../routes/products.route'));
     this.app.use(this.endPoint.search, require('../routes/searches.route'));
@@ -63,10 +64,10 @@ class Server {
   }
 
   async seed() {
-    console.log('Starting User Seeded!');
+    console.log("Starting User Seeded!");
     await seed();
-    console.log('Finish User Seeded!');
+    console.log("Finish User Seeded!");
   }
 }
 
-module.exports = Server;
+export default Server;

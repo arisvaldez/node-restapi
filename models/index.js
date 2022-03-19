@@ -1,10 +1,10 @@
-const Category = require('./category');
-const Product = require('./product');
-const Role = require('./role');
-const Server = require('./server');
-const User = require('./user');
+import Category from './category';
+import Product from './product';
+import Role from './role';
+import Server from './server';
+import User from './user';
 
-module.exports = {
+export default {
   Category,
   Product,
   Role,

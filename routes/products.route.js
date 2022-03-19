@@ -1,29 +1,30 @@
-const { Router } = require('express');
-const { check } = require('express-validator');
+import { Router } from "express";
+import { check } from "express-validator";
 
-const {
+import {
   jwtValidator,
   fieldsValidator,
   isExistProductById,
   isExistCategoryById,
   isAdminRole,
-} = require('../middlewares');
+} from "../middlewares";
 
-const {
+import {
   create,
   retrieve,
   retrieveById,
   update,
   softDelete,
-} = require('../controllers/products.controller');
+} from "../controllers/products.controller";
 
 const router = Router();
 
-router.get('/', retrieve);
+router.get("/", retrieve);
 
 router.get(
-  '/:id',
+  "/:id",
   [
+
     check('id', 'This is a invalid ID').isMongoId(),
     check('id').custom(isExistProductById),
     fieldsValidator,
@@ -32,7 +33,7 @@ router.get(
 );
 
 router.post(
-  '/',
+  "/",
   [
     jwtValidator,
     check('name', 'the name is required').notEmpty(),
@@ -45,7 +46,7 @@ router.post(
 );
 
 router.put(
-  '/:id',
+  "/:id",
   [
     jwtValidator,
     check('id', 'This is a invalid ID').isMongoId(),
@@ -60,7 +61,7 @@ router.put(
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   [
     jwtValidator,
     isAdminRole,
@@ -71,4 +72,4 @@ router.delete(
   softDelete
 );
 
-module.exports = router;
+export default router;

@@ -1,16 +1,16 @@
-const { fieldsValidator } = require('./fields-validator');
-const { googleVerify } = require('./google-verify');
-const { jwtValidator } = require('./jwt-validator');
-const { isAdminRole, hasRole } = require('./role-validator');
-const {
+import fieldsValidator from "./fields-validator";
+import googleVerify from "./google-verify";
+import { jwtValidator } from "./jwt-validator";
+import { isAdminRole, hasRole } from "./role-validator";
+import {
   isValidRole,
   isUniqueEmail,
   isExistUserById,
   isExistCategoryById,
   isExistProductById,
-} = require('./db-validators');
+} from "./db-validators";
 
-module.exports = {
+export default {
   fieldsValidator,
   googleVerify,
   jwtValidator,

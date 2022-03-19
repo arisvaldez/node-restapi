@@ -1,5 +1,5 @@
-const { response, request } = require('express');
-const { Product } = require('../models');
+import { response, request } from "express";
+import { Product } from "../models";
 
 const create = async (req = request, res = response) => {
   const { price, category, description, name } = req.body;
@@ -57,8 +57,8 @@ const retrieve = async (req = request, res = response) => {
   const [total, products] = await Promise.all([
     Product.countDocuments(query),
     Product.find(query)
-      .populate('user', 'name')
-      .populate('category', 'name')
+      .populate("user", "name")
+      .populate("category", "name")
       .skip(Number(_from))
       .limit(Number(_limit)),
   ]);
@@ -69,8 +69,8 @@ const retrieve = async (req = request, res = response) => {
 const retrieveById = async (req = request, res = response) => {
   const { id } = req.params;
   const product = await Product.findById(id)
-    .populate('user', 'name')
-    .populate('category', 'name');
+    .populate("user", "name")
+    .populate("category", "name");
 
   res.json(product);
 };
@@ -79,7 +79,7 @@ const update = async (req = request, res = response) => {
   const { status, user, ...data } = req.body;
   const { id } = req.params;
   const _user_id = req.authenticatedUser.__id;
-  
+
   data.name = data.name.toUpperCase();
   data.user = _user_id;
 
@@ -127,7 +127,7 @@ const _isExistProductByName = async (name) => {
   return isExist;
 };
 
-module.exports = {
+export default {
   create,
   retrieve,
   retrieveById,

@@ -1,6 +1,6 @@
-const { request, response } = require('express');
-const { User, Category, Product } = require('../models');
-const { ObjectId } = require('mongoose').Types;
+import { response, request } from "express";
+import { User, Category, Product } from "../models";
+import { ObjectId } from 'mongoose/Types'
 
 const allowedCollections = {
   users: 'users',
@@ -100,6 +100,8 @@ const search = async (req = request, res = response) => {
     )}`,
   });
 };
+
+export { search }
 
 module.exports = {
   search,
