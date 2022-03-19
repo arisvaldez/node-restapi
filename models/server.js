@@ -1,5 +1,7 @@
-import express, { json, static } from "express";
+import express from "express";
 import cors from "cors";
+import fileUpload from "express-fileupload";
+
 
 import User from "./user";
 import { dbConnection } from "../database/config";
@@ -11,10 +13,12 @@ class Server {
     this.port = process.env.PORT;
 
     this.endPoint = {
-      users: "/api/users",
-      auth: "/api/auth",
-      categories: "/api/categories",
-      products: "api/products",
+      auth: '/api/auth',
+      categories: '/api/categories',
+      search: '/api/searches',
+      products: '/api/products',
+      uploads: '/api/uploads',
+      users: '/api/users',
     };
 
     this.connectToDb();
@@ -27,8 +31,14 @@ class Server {
 
   middlewares() {
     this.app.use(cors());
-    this.app.use(json());
-    this.app.use(static("public"));
+    this.app.use(express.json());
+    this.app.use(express.static('public'));
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: '/tmp/',
+      })
+    );
   }
 
   async connectToDb() {
@@ -41,11 +51,10 @@ class Server {
       this.endPoint.categories,
       require("../routes/categories.route").default
     );
-    this.app.use(
-      this.endPoint.products,
-      require("../routes/products.route").default
-    );
-    this.app.use(this.endPoint.users, require("../routes/users.route").default);
+    this.app.use(this.endPoint.products, require('../routes/products.route'));
+    this.app.use(this.endPoint.search, require('../routes/searches.route'));
+    this.app.use(this.endPoint.uploads, require('../routes/uploads.route'));
+    this.app.use(this.endPoint.users, require('../routes/users.route'));
   }
 
   listen() {

@@ -7,6 +7,7 @@ import {
   isUniqueEmail,
   isExistUserById,
   isExistCategoryById,
+  isExistProductById,
 } from "./db-validators";
 
 export default {
@@ -19,4 +20,5 @@ export default {
   isUniqueEmail,
   isExistUserById,
   isExistCategoryById,
+  isExistProductById,
 };

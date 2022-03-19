@@ -1,4 +1,4 @@
-import { Category, User, Role } from "../models";
+import { Category, User, Role, Product } from "../models";
 
 const isValidRole = async (role = "") => {
   const hasRole = await Role.findOne({ role });
@@ -25,6 +25,14 @@ const isExistUserById = async (id) => {
 const isExistCategoryById = async (id) => {
   const isExist = await Category.findById(id);
 
+  if (!isExist) {
+    throw new Error(`This id isn't exist, id:${id}`);
+  }
+};
+
+const isExistProductById = async (id) => {
+  const isExist = await Product.findById(id);
+  
   if (!isExist) {
     throw new Error(`This id isn't exist, id:${id}`);
   }

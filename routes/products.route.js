@@ -4,6 +4,7 @@ import { check } from "express-validator";
 import {
   jwtValidator,
   fieldsValidator,
+  isExistProductById,
   isExistCategoryById,
   isAdminRole,
 } from "../middlewares";
@@ -23,8 +24,9 @@ router.get("/", retrieve);
 router.get(
   "/:id",
   [
-    check("id", "This is a invalid ID").isMongoId(),
-    check("id").custom(isExistCategoryById),
+
+    check('id', 'This is a invalid ID').isMongoId(),
+    check('id').custom(isExistProductById),
     fieldsValidator,
   ],
   retrieveById
@@ -34,7 +36,10 @@ router.post(
   "/",
   [
     jwtValidator,
-    check("name", "the name is required").notEmpty(),
+    check('name', 'the name is required').notEmpty(),
+    check('category', 'The category is required').notEmpty(),
+    check('category', 'This is a invalid ID').isMongoId(),
+    check('category').custom(isExistCategoryById),
     fieldsValidator,
   ],
   create
@@ -44,9 +49,12 @@ router.put(
   "/:id",
   [
     jwtValidator,
-    check("id", "This is a invalid ID").isMongoId(),
-    check("id").custom(isExistCategoryById),
-    check("name", "This name is required").notEmpty(),
+    check('id', 'This is a invalid ID').isMongoId(),
+    check('id').custom(isExistProductById),
+    check('name', 'The name is required').notEmpty(),
+    check('category', 'The category is required').notEmpty(),
+    check('category', 'This is a invalid ID').isMongoId(),
+    check('category').custom(isExistCategoryById),
     fieldsValidator,
   ],
   update
@@ -57,8 +65,8 @@ router.delete(
   [
     jwtValidator,
     isAdminRole,
-    check("id", "This is a invalid ID").isMongoId(),
-    check("id").custom(isExistCategoryById),
+    check('id', 'This is a invalid ID').isMongoId(),
+    check('id').custom(isExistProductById),
     fieldsValidator,
   ],
   softDelete

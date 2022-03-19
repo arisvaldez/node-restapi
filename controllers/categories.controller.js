@@ -1,5 +1,5 @@
-import { response, request } from 'express';
-import { Category } from '../models';
+import { response, request } from "express";
+import { Category } from "../models";
 
 const create = async (req = request, res = response) => {
   const name = req.body.name.toUpperCase();
@@ -9,16 +9,16 @@ const create = async (req = request, res = response) => {
     user: req.authenticatedUser._id,
   };
 
-  const validation = await _isExistCategoryByName(name);
+  const categoryInDb = await _isExistCategoryByName(name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = req.authenticatedUser._id;
+  if (categoryInDb) {
+    if (!categoryInDb.status) {
+      categoryInDb.status = true;
+      categoryInDb.user = req.authenticatedUser._id;
 
       const category = await Category.findByIdAndUpdate(
-        validation.id,
-        validation,
+        categoryInDb.id,
+        categoryInDb,
         {
           new: true,
         }
@@ -49,7 +49,7 @@ const retrieve = async (req = request, res = response) => {
   const [total, categories] = await Promise.all([
     Category.countDocuments(query),
     Category.find(query)
-      .populate('user', 'name')
+      .populate("user", "name")
       .skip(Number(_from))
       .limit(Number(_limit)),
   ]);
@@ -59,7 +59,7 @@ const retrieve = async (req = request, res = response) => {
 
 const retrieveById = async (req = request, res = response) => {
   const { id } = req.params;
-  const category = await Category.findById(id).populate('user', 'name');
+  const category = await Category.findById(id).populate("user", "name");
 
   res.json(category);
 };
@@ -71,14 +71,14 @@ const update = async (req = request, res = response) => {
   data.name = data.name.toUpperCase();
   data.user = req.authenticatedUser;
 
-  const validation = await _isExistCategoryByName(data.name);
+  const categoryInDb = await _isExistCategoryByName(data.name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = req.authenticatedUser._id;
+  if (categoryInDb) {
+    if (!categoryInDb.status) {
+      categoryInDb.status = true;
+      categoryInDb.user = req.authenticatedUser._id;
 
-      const category = await Category.findByIdAndUpdate(id, validation, {
+      const category = await Category.findByIdAndUpdate(id, categoryInDb, {
         new: true,
       });
 

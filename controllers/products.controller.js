@@ -1,5 +1,5 @@
-import { response, request } from 'express';
-import { Product } from '../models';
+import { response, request } from "express";
+import { Product } from "../models";
 
 const create = async (req = request, res = response) => {
   const { price, category, description, name } = req.body;
@@ -15,18 +15,18 @@ const create = async (req = request, res = response) => {
     user: _user_id,
   };
 
-  const validation = await _isExistProductByName(_name);
+  const productInDb = await _isExistProductByName(_name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = _user_id;
-      validation.category;
-      validation.description;
+  if (productInDb) {
+    if (!productInDb.status) {
+      productInDb.status = true;
+      productInDb.user = _user_id;
+      productInDb.category;
+      productInDb.description;
 
       const product = await Product.findByIdAndUpdate(
-        validation.id,
-        validation,
+        productInDb.id,
+        productInDb,
         {
           new: true,
         }
@@ -57,8 +57,8 @@ const retrieve = async (req = request, res = response) => {
   const [total, products] = await Promise.all([
     Product.countDocuments(query),
     Product.find(query)
-      .populate('user', 'name')
-      .populate('category', 'name')
+      .populate("user", "name")
+      .populate("category", "name")
       .skip(Number(_from))
       .limit(Number(_limit)),
   ]);
@@ -69,8 +69,8 @@ const retrieve = async (req = request, res = response) => {
 const retrieveById = async (req = request, res = response) => {
   const { id } = req.params;
   const product = await Product.findById(id)
-    .populate('user', 'name')
-    .populate('category', 'name');
+    .populate("user", "name")
+    .populate("category", "name");
 
   res.json(product);
 };
@@ -83,16 +83,16 @@ const update = async (req = request, res = response) => {
   data.name = data.name.toUpperCase();
   data.user = _user_id;
 
-  const validation = await _isExistProductByName(data.name);
+  const productInDb = await _isExistProductByName(data.name);
 
-  if (validation) {
-    if (!validation.status) {
-      validation.status = true;
-      validation.user = _user_id;
-      validation.category;
-      validation.description;
+  if (productInDb) {
+    if (!productInDb.status) {
+      productInDb.status = true;
+      productInDb.user = _user_id;
+      productInDb.category;
+      productInDb.description;
 
-      const product = await Product.findByIdAndUpdate(id, validation, {
+      const product = await Product.findByIdAndUpdate(id, productInDb, {
         new: true,
       });
 
@@ -100,12 +100,12 @@ const update = async (req = request, res = response) => {
     }
     return res
       .status(400)
-      .json({ msg: `This name is already in use, name:${_name}` });
+      .json({ msg: `This name is already in use, name:${data.name}` });
   }
 
-  const category = await Category.findByIdAndUpdate(id, data, { new: true });
+  const product = await Product.findByIdAndUpdate(id, data, { new: true });
 
-  res.json(category);
+  res.json(product);
 };
 
 const softDelete = async (req = request, res = response) => {
