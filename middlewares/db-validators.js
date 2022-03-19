@@ -1,13 +1,13 @@
-const { Category, User, Role } = require('../models');
+import { Category, User, Role } from "../models";
 
-const isValidRole = async (role = '') => {
+const isValidRole = async (role = "") => {
   const hasRole = await Role.findOne({ role });
   if (!hasRole) {
-    throw new Error('Unknow Role');
+    throw new Error("Unknow Role");
   }
 };
 
-const isUniqueEmail = async (email = '') => {
+const isUniqueEmail = async (email = "") => {
   const existEmail = await User.findOne({ email });
   if (existEmail) {
     throw new Error(`the email: ${email} is alredy in use`);
@@ -30,9 +30,4 @@ const isExistCategoryById = async (id) => {
   }
 };
 
-module.exports = {
-  isValidRole,
-  isUniqueEmail,
-  isExistUserById,
-  isExistCategoryById,
-};
+export { isValidRole, isUniqueEmail, isExistUserById, isExistCategoryById };

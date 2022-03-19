@@ -1,9 +1,9 @@
-const express = require('express');
-const cors = require('cors');
+import express, { json, static } from "express";
+import cors from "cors";
 
-const User = require('./user');
-const { dbConnection } = require('../database/config');
-const { seed } = require('../database/seed');
+import User from "./user";
+import { dbConnection } from "../database/config";
+import { seed } from "../database/seed";
 
 class Server {
   constructor() {
@@ -11,10 +11,10 @@ class Server {
     this.port = process.env.PORT;
 
     this.endPoint = {
-      users: '/api/users',
-      auth: '/api/auth',
-      categories: '/api/categories',
-      products: 'api/products',
+      users: "/api/users",
+      auth: "/api/auth",
+      categories: "/api/categories",
+      products: "api/products",
     };
 
     this.connectToDb();
@@ -27,8 +27,8 @@ class Server {
 
   middlewares() {
     this.app.use(cors());
-    this.app.use(express.json());
-    this.app.use(express.static('public'));
+    this.app.use(json());
+    this.app.use(static("public"));
   }
 
   async connectToDb() {
@@ -36,13 +36,16 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.endPoint.auth, require('../routes/auth.route'));
+    this.app.use(this.endPoint.auth, require("../routes/auth.route").default);
     this.app.use(
       this.endPoint.categories,
-      require('../routes/categories.route')
+      require("../routes/categories.route").default
     );
-    this.app.use(this.endPoint.products, require('../routes/products.route'));
-    this.app.use(this.endPoint.users, require('../routes/users.route'));
+    this.app.use(
+      this.endPoint.products,
+      require("../routes/products.route").default
+    );
+    this.app.use(this.endPoint.users, require("../routes/users.route").default);
   }
 
   listen() {
@@ -52,10 +55,10 @@ class Server {
   }
 
   async seed() {
-    console.log('Starting User Seeded!');
+    console.log("Starting User Seeded!");
     await seed();
-    console.log('Finish User Seeded!');
+    console.log("Finish User Seeded!");
   }
 }
 
-module.exports = Server;
+export default Server;

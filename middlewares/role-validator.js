@@ -1,15 +1,15 @@
-const { request, response } = require('express');
+import { request, response } from "express";
 
 const isAdminRole = (req = request, res = response, next) => {
   if (!req.authenticatedUser) {
     return res.status(500).json({
-      msg: 'It did try to valdiate the role without validated authenticatedUser',
+      msg: "It did try to valdiate the role without validated authenticatedUser",
     });
   }
 
   const { role } = req.authenticatedUser;
 
-  if (role !== 'ADMIN') {
+  if (role !== "ADMIN") {
     return res.status(401).json({
       msg: `For perform this action, the role ADMIN is needed`,
     });
@@ -21,7 +21,7 @@ const hasRole = (...roles) => {
   return (req = request, res = response, next) => {
     if (!req.authenticatedUser) {
       return res.status(500).json({
-        msg: 'It did try to valdiate the role without validated user',
+        msg: "It did try to valdiate the role without validated user",
       });
     }
 
@@ -35,7 +35,7 @@ const hasRole = (...roles) => {
   };
 };
 
-module.exports = {
+export default {
   isAdminRole,
   hasRole,
 };

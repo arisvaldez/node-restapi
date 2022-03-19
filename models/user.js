@@ -1,11 +1,11 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from "mongoose";
 
 const UserSchema = Schema({
   name: { type: String, require: true },
   email: { type: String, require: true, unique: true },
   password: { type: String, require: true },
   img: { type: String },
-  role: { type: String, require: true, enum: ['ADMIN', 'USER'] },
+  role: { type: String, require: true, enum: ["ADMIN", "USER"] },
   status: { type: Boolean, default: true },
   google: { type: Boolean, default: false },
 });
@@ -16,4 +16,4 @@ UserSchema.methods.toJSON = function () {
   return user;
 };
 
-module.exports = model('User', UserSchema);
+export default model("User", UserSchema);

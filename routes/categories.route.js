@@ -1,67 +1,67 @@
-const { Router } = require('express');
-const { check } = require('express-validator');
+import { Router } from "express";
+import { check } from "express-validator";
 
-const {
+import {
   jwtValidator,
   fieldsValidator,
   isExistCategoryById,
   isAdminRole,
-} = require('../middlewares');
+} from "../middlewares";
 
-const {
+import {
   create,
   retrieve,
   retrieveById,
   update,
   softDelete,
-} = require('../controllers/categories.controller');
+} from "../controllers/categories.controller";
 
 const router = Router();
 
-router.get('/', retrieve);
+router.get("/", retrieve);
 
 router.get(
-  '/:id',
+  "/:id",
   [
-    check('id', 'This is a invalid ID').isMongoId(),
-    check('id').custom(isExistCategoryById),
+    check("id", "This is a invalid ID").isMongoId(),
+    check("id").custom(isExistCategoryById),
     fieldsValidator,
   ],
   retrieveById
 );
 
 router.post(
-  '/',
+  "/",
   [
     jwtValidator,
-    check('name', 'the name is required').notEmpty(),
+    check("name", "the name is required").notEmpty(),
     fieldsValidator,
   ],
   create
 );
 
 router.put(
-  '/:id',
+  "/:id",
   [
     jwtValidator,
-    check('id', 'This is a invalid ID').isMongoId(),
-    check('id').custom(isExistCategoryById),
-    check('name', 'This name is required').notEmpty(),
+    check("id", "This is a invalid ID").isMongoId(),
+    check("id").custom(isExistCategoryById),
+    check("name", "This name is required").notEmpty(),
     fieldsValidator,
   ],
   update
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   [
     jwtValidator,
     isAdminRole,
-    check('id', 'This is a invalid ID').isMongoId(),
-    check('id').custom(isExistCategoryById),
+    check("id", "This is a invalid ID").isMongoId(),
+    check("id").custom(isExistCategoryById),
     fieldsValidator,
   ],
   softDelete
 );
 
-module.exports = router;
+export default router;

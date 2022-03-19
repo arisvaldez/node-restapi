@@ -1,18 +1,18 @@
-const bcryptjs = require('bcryptjs');
-const User = require('../models/user');
-const Role = require('../models/role');
+import { genSaltSync, hashSync } from "bcryptjs";
+import User from "../models/user";
+import Role from "../models/role";
 
 const userSeed = async () => {
   let count = 1;
-  const salt = bcryptjs.genSaltSync();
-  const password = bcryptjs.hashSync('123456', salt);
+  const salt = genSaltSync();
+  const password = hashSync("123456", salt);
 
   while (count <= 15) {
     const user = new User({
       name: `User ${count}`,
       email: `user${count}@email.com`,
       password,
-      role: 'USER',
+      role: "USER",
     });
 
     await user.save();
@@ -23,13 +23,13 @@ const userSeed = async () => {
 
 const roleSeed = async () => {
   const role = new Role({
-    role: 'ADMIN',
+    role: "ADMIN",
   });
 
   role.save();
 
   role = new Role({
-    role: 'USER',
+    role: "USER",
   });
 
   role.save();
@@ -40,6 +40,6 @@ const seed = async () => {
   await userSeed();
 };
 
-module.exports = {
+export default {
   seed,
 };

@@ -1,5 +1,5 @@
-const { response, request } = require('express');
-const { Product } = require('../models');
+import { response, request } from 'express';
+import { Product } from '../models';
 
 const create = async (req = request, res = response) => {
   const { price, category, description, name } = req.body;
@@ -127,7 +127,7 @@ const _isExistProductByName = async (name) => {
   return isExist;
 };
 
-module.exports = {
+export default {
   create,
   retrieve,
   retrieveById,

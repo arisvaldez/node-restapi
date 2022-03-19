@@ -1,5 +1,5 @@
-const { response, request } = require('express');
-const { Category } = require('../models');
+import { response, request } from 'express';
+import { Category } from '../models';
 
 const create = async (req = request, res = response) => {
   const name = req.body.name.toUpperCase();
@@ -113,7 +113,7 @@ const _isExistCategoryByName = async (name) => {
   return isExist;
 };
 
-module.exports = {
+export default {
   create,
   retrieve,
   retrieveById,

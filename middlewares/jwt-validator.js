@@ -1,12 +1,12 @@
-const { request, response } = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+import { request, response } from "express";
+import { jwt } from "jsonwebtoken";
+import User from "../models/user";
 
 const jwtValidator = async (req = request, res = response, next) => {
-  const token = req.header('token');
+  const token = req.header("token");
 
   if (!token) {
-    return res.status(401).json({ msg: 'Token not found' });
+    return res.status(401).json({ msg: "Token not found" });
   }
 
   try {
@@ -29,9 +29,7 @@ const jwtValidator = async (req = request, res = response, next) => {
 
 const invalidTokenMsg = async (res) =>
   res.status(401).json({
-    msg: 'invalid Token',
+    msg: "invalid Token",
   });
 
-module.exports = {
-  jwtValidator,
-};
+export { jwtValidator }

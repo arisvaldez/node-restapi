@@ -1,11 +1,11 @@
-const { request, response } = require('express');
-const { json } = require('express/lib/response');
-const bcryptjs = require('bcryptjs');
+import { request, response } from "express";
+import { json } from "express/lib/response";
+import { compareSync } from "bcryptjs";
 
-const { generateJWT } = require('../JWT/generate-jwt');
+import generateJWT from "../JWT/generate-jwt";
 
-const User = require('../models/user');
-const { googleVerify } = require('../middlewares/');
+import User from "../models/user";
+import { googleVerify } from "../middlewares/";
 
 const login = async (req = request, res = response) => {
   const { email, password } = req.body;
@@ -17,21 +17,21 @@ const login = async (req = request, res = response) => {
     if (!user) {
       return res
         .status(400)
-        .json({ msg: 'User or Password invalid - user not found' });
+        .json({ msg: "User or Password invalid - user not found" });
     }
 
     if (!user.status) {
       return res
         .status(400)
-        .json({ msg: 'User or Password invalid - user inactive' });
+        .json({ msg: "User or Password invalid - user inactive" });
     }
 
-    const validPassword = bcryptjs.compareSync(password, user.password);
+    const validPassword = compareSync(password, user.password);
 
     if (!validPassword) {
       return res
         .status(400)
-        .json({ msg: 'User or Password invalid - invalid Password' });
+        .json({ msg: "User or Password invalid - invalid Password" });
     }
 
     const token = await generateJWT(user.id);
@@ -42,7 +42,7 @@ const login = async (req = request, res = response) => {
 
     res
       .status(500)
-      .json({ msg: 'An error was happen, contact with administrator' });
+      .json({ msg: "An error was happen, contact with administrator" });
   }
 };
 
@@ -56,10 +56,10 @@ const googleSignIn = async (req = request, res = response) => {
       const data = {
         name,
         email,
-        password: 'none',
+        password: "none",
         img,
         google: true,
-        role: 'USER',
+        role: "USER",
       };
 
       user = new User(data);
@@ -68,7 +68,7 @@ const googleSignIn = async (req = request, res = response) => {
 
     if (!user.status) {
       return res.status(401).json({
-        msg: 'This user is blocked, try contact with admin.',
+        msg: "This user is blocked, try contact with admin.",
       });
     }
 
@@ -85,7 +85,7 @@ const googleSignIn = async (req = request, res = response) => {
   }
 };
 
-module.exports = {
+export default {
   login,
   googleSignIn,
 };

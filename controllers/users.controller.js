@@ -1,6 +1,6 @@
-const { response, request } = require('express');
-const bcryptjs = require('bcryptjs');
-const User = require('../models/user');
+import { response, request } from "express";
+import bcryptjs from "bcryptjs";
+import User from "../models/user";
 
 const retrieve = async (req = request, res = response) => {
   const { limit, from } = req.query;
@@ -31,7 +31,7 @@ const create = async (req = request, res = response) => {
     res.json(user);
   } catch (error) {
     console.error(error);
-    res.status(400).json({ msg: 'Faltan Campos requeridos' });
+    res.status(400).json({ msg: "Faltan Campos requeridos" });
   }
 };
 
@@ -61,9 +61,4 @@ const sofDelete = async (req = request, res = response) => {
   res.json({ user, uid });
 };
 
-module.exports = {
-  retrieve,
-  sofDelete,
-  create,
-  update,
-};
+export default { retrieve, sofDelete, create, update };
