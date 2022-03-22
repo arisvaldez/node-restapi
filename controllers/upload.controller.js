@@ -1,40 +1,55 @@
 const { response, request } = require('express');
-const path = require('path');
+const { fileUpload } = require('../uploader/file-upload');
+const { User, Product } = require('../models');
 
-const uploadFiles = (req = request, res = response) => {
+const uploader = async (req = request, res = response) => {
+  if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
+    res.status(400).json('No files were uploaded.');
+    return;
+  }
+  const allowedFileExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+  const filePath = await fileUpload(req.files, allowedFileExtensions);
+
+  return res.json(filePath);
+};
+
+const updateImage = async (req = request, res = response) => {
+  const { id, collection } = req.params;
+
   if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
     res.status(400).json('No files were uploaded.');
     return;
   }
 
-  const { file } = (sampleFile = req.files);
+  let model;
 
-  const splitedName = file.name.split('.');
-  const fileExtension = splitedName[splitedName.length - 1];
+  switch (collection) {
+    case 'users':
+      model = await User.findById(id);
+      break;
 
-  const uploadPath = path.join(__dirname, '../uploads/', file.name);
+    case 'products':
+      model = await Product.findById(id);
+      break;
 
-  const allowedFileExtensions = ['png', 'jpg', 'jpeg', 'gif'];
-
-  if(!allowedFileExtensions.includes(fileExtension)){
-      return res.status(400).json({
-          msg: `This file extension is not allowed`,
-          allowdExtensions:`${allowedFileExtensions}`
-      })
+    default:
+      break;
   }
+  const allowedFileExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+  const imgName = await fileUpload(
+    req.files,
+    allowedFileExtensions,
+    collection
+  );
 
-  file.mv(uploadPath, (err) => {
-    if (err) {
-      return res.status(500).json(err);
-    }
+  model.img = imgName;
 
-    res.json({
-      msg: 'File uploaded to ' + uploadPath,
-      extension: fileExtension,
-    });
-  });
+  model.save();
+
+  res.json(model);
 };
 
 module.exports = {
-  uploadFiles,
+  uploader,
+  updateImage,
 };
