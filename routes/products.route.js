@@ -1,12 +1,12 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
+const { isExistProductById, isExistCategoryById } = require('../validators');
+
 const {
+  isAdminRole,
   jwtValidator,
   fieldsValidator,
-  isExistProductById,
-  isExistCategoryById,
-  isAdminRole,
 } = require('../middlewares');
 
 const {

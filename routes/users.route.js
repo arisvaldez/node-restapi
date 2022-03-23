@@ -5,6 +5,9 @@ const {
   isValidRole,
   isUniqueEmail,
   isExistsUserById,
+} = require('../validators');
+
+const {
   jwtValidator,
   fieldsValidator,
   isAdminRole,
@@ -60,6 +63,5 @@ router.delete(
   ],
   sofDelete
 );
-
 
 module.exports = router;

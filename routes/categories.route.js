@@ -1,12 +1,9 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const {
-  jwtValidator,
-  fieldsValidator,
-  isExistCategoryById,
-  isAdminRole,
-} = require('../middlewares');
+const { jwtValidator, isAdminRole, fieldsValidator } = require('../middlewares');
+
+const { isExistCategoryById } = require('../validators');
 
 const {
   create,
