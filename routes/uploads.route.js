@@ -1,8 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { retrieveImage } = require('../controllers/upload.controller');
-const { uploader, updateImage } = require('../controllers/upload.controller');
+const { uploader, updateImageCloudinary, retrieveImageCloudinary } = require('../controllers/upload.controller');
 const { fieldsValidator, fileValidator } = require('../middlewares');
 const { allowedCollections } = require('../validators');
 
@@ -17,7 +16,7 @@ router.get(
     ),
     fieldsValidator,
   ],
-  retrieveImage
+  retrieveImageCloudinary
 );
 
 router.post('/', uploader);
@@ -32,7 +31,7 @@ router.put(
     fileValidator,
     fieldsValidator,
   ],
-  updateImage
+  updateImageCloudinary
 );
 
 module.exports = router;
