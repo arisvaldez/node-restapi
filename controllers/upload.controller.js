@@ -69,15 +69,18 @@ const retrieveImage = async (req = request, res = response) => {
       break;
   }
 
-  if (model.img) {
+  if (model && model.img) {
     const imgPath = path.join(__dirname, '../uploads', collection, model.img);
 
     if (fs.existsSync(imgPath)) {
-      return res.sendFile(imgPath)
+      return res.sendFile(imgPath);
     }
   }
-
-  res.json({msg:'Image Not Found.'});
+  
+  const noImage = path.join(__dirname, '../assets/img/no-image.jpg');
+  if (fs.existsSync(noImage)) {
+    return res.sendFile(noImage);
+  }
 };
 
 module.exports = {
